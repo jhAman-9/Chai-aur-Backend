@@ -17,4 +17,5 @@
 
 - cloudinary 
 - user route
-- user controllers
+
+- user controllers (checking user Registered or not)

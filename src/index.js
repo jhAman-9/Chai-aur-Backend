@@ -3,9 +3,6 @@
 import dotenv from "dotenv";
 import { app } from "./app.js";
 
-// import mongoose from "mongoose";
-// import { DB_NAME } from "./constants";
-
 import connectDB from "./db/index.js";
 
 dotenv.config({
@@ -27,8 +24,16 @@ connectDB()
     console.log("MONGOOSE CONNECTION FIALED !!!", err);
   });
 
+
+
+
+
+
 /*
 import express from "express";
+// import mongoose from "mongoose";
+// import { DB_NAME } from "./constants";
+
 // function connectDB() {
 // }
 // connectDB()

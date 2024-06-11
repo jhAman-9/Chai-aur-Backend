@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema(
   {
-    user: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -54,7 +54,7 @@ const userSchema = new Schema(
 userSchema.pre("save", async function () {
   if (this.isModified("password")) {
     // not modified then modify
-    this.password = bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
   }
 });
@@ -69,7 +69,7 @@ userSchema.methods.generateAccessToken = function () {
     {
       _id: this._id,
       email: this.email,
-      user: this.user,
+      username: this.username,
       fullName: this.fullName,
     },
     process.env.ACCESS_TOKEN_SECRET,
