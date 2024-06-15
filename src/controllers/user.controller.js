@@ -6,10 +6,14 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 
 const registerUser = asyncHandler(async (req, res) => {
     // Demo
-    // res.status(200).json({
-    //     message : "Aman Kumar Jha"
-    // })
+//     res.status(200).json({
+//         message: "Aman Kumar Jha"
+//     })
+// })
 
+
+
+    
     // get user details from frontend
     // validation - not empty
     // check if user already exists : username, email
@@ -23,18 +27,20 @@ const registerUser = asyncHandler(async (req, res) => {
     const {fullName, username, email, password} = req.body
     console.log("email : ", email);
 
+    console.log(req.files);
+
     // if (fullName === "") {
     //     throw new ApiError(400,"fullname is required");
     // }
 
     if ([fullName, email, password, username].some((field) =>
-        field?.trim() === ""
+        field?.trim() === ""                // if empty any field throw error
     )) {
         throw new ApiError(400, "All fields are required")
     }
 
     // check that the user exist of not
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or : [{username}, {email}]
     })
     
@@ -43,26 +49,34 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const avatarLocalPath =  req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.file?.coverImage[0]?.path;
+    // const coverImageLocalPath = req.file?.coverImage[0]?.path;
 
     if (!avatarLocalPath) throw new ApiError(400, "Avatar file is required")
     
+    
+    let coverImageLocalPath;
+    // putting checks for cover Image and now wothout coverImage put req should be taken
+    if (req.file && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
+
+    
     // uploading to cloudinary
     const avatar = await uploadOnCLoundinary(avatarLocalPath)
-    const coverImage = await uploadOnCLoundinary(coverImageLocalPath)
+    const coverImage = await uploadOnCLoundinary(coverImageLocalPath);
 
 
     if (!avatar) throw new ApiError(400, "Avatar file required")
     
     
-    // Stroring in DB
+    // Storing in DB
     const user = await User.create({
         fullName,
         avatar: avatar.url,
         coverImage: coverImage?.url || "",
         email,
         password,
-        username : username.tolowerCase()
+        username : username.toLowerCase()
     })
 
     // check that the user is created in DB or not
