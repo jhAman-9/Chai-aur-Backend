@@ -196,7 +196,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 // user match with refersh Token
-export const refreshAccessToken = asyncHandler(async (req, res) => {
+const refreshAccessToken = asyncHandler(async (req, res) => {
   const incommingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
 
