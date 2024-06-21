@@ -21,6 +21,6 @@ app.use("/person", person);
 app.use("/menu", menuItems);
 
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("listen on port 3000");
 });
