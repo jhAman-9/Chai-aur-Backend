@@ -15,6 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 
+
 router.post("/", async (req, res) => {
   try {
     const data = req.body; // body parser giving data
@@ -54,5 +55,50 @@ router.get(`/:workType`, async (req, res) => {
       .json({ error: "Internal Error While Fetching the of menu" });
   }
 });
+
+router.put("/:_id", async (req, res) => {
+  try {
+    const personId = req.params._id;
+    const allPersonData = req.body;
+
+    const updatedPersonData = await person.findByIdAndUpdate(
+      personId,
+      allPersonData,
+      {
+        runValidators: true, // also check validators
+        new: true, // Update data access
+      }
+    );
+
+    if (!updatedPersonData) {
+      return res.status(404).json({ error: "Person Data Not Found" });
+    }
+
+    res.status(200).json(updatedPersonData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.delete("/:_id", async (req, res) => {
+  try {
+    const personId = req.params._id;
+
+    // FindByIdAndRemove func use to remove data with id
+    const personDataAfterDeleting = await person.findByIdAndDelete(personId);
+
+    if (!personDataAfterDeleting) {
+      return res.status(404).json({ error: "Person Data not found to Delete" });
+    }
+
+    res.status(200).json( {message : "Person Data Is Deleted Successfully"});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 module.exports = router;
